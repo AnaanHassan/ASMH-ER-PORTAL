@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Doctor {
+  id           String    @id @default(cuid())
+  name         String
+  username     String    @unique
+  passwordHash String
+  role         String    @default("DOCTOR")
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  patients     Patient[] @relation("AttendingDoctor")
+  dischargedPatients Patient[] @relation("DischargeDoctor")
+}
+
+model Bed {
+  id           String    @id @default(cuid())
+  name         String    @unique
+  zone         String
+  room         String?
+  displayOrder Int
+  color        String
+  patients     Patient[]
+}
+
+model Patient {
+  id                String   @id @default(cuid())
+  name              String
+  age               Int?
+  gender            String?
+  nidPassport       String?
+  hospitalNumber    String?
+  bedId             String?
+  bed               Bed?     @relation(fields: [bedId], references: [id])
+  arrivalDateTime   DateTime?
+  referredBy        String?
+  attendingDoctorId String?
+  attendingDoctor   Doctor?  @relation("AttendingDoctor", fields: [attendingDoctorId], references: [id])
+  underlyingConditions String?
+  regularMedications   String?
+  allergyHistory       String?  @default("NKDA")
+  lastMeal             String?
+  lmp                  String?
+  chiefComplaints              String?
+  historyOfPresentingIllness   String?
+  airwaySpeech     String?
+  spo2Percent      Float?
+  spo2PerLiter     String?
+  rr               Int?
+  chestFindings    String?
+  pr               Int?
+  bp               String?
+  heartSounds      String?
+  grbs             Float?
+  gcsE             Int?
+  gcsV             Int?
+  gcsM             Int?
+  pupilDiameterR   String?
+  pupilDiameterL   String?
+  pupilReactionR   String?
+  pupilReactionL   String?
+  cornealReflexR   String?
+  cornealReflexL   String?
+  ulRight          String?
+  ulLeft           String?
+  llRight          String?
+  llLeft           String?
+  tempC            Float?
+  abdomenLogRoll   String?
+  dre              String?
+  bedsideUsg       String?
+  physicalExamGC       String?
+  physicalExamFindings String?
+  invCBC            Boolean @default(false)
+  invLFT            Boolean @default(false)
+  invRFT            Boolean @default(false)
+  invElectrolytes   Boolean @default(false)
+  invCardiacMarkers Boolean @default(false)
+  invCRP            Boolean @default(false)
+  invDengue         Boolean @default(false)
+  invRBS            Boolean @default(false)
+  invBHCG           Boolean @default(false)
+  invUrineRoutine   Boolean @default(false)
+  invUrineCulture   Boolean @default(false)
+  invECG            Boolean @default(false)
+  invXray           Boolean @default(false)
+  invUSG            Boolean @default(false)
+  invDoppler        Boolean @default(false)
+  invCT             Boolean @default(false)
+  invMRI            Boolean @default(false)
+  invOthers         String?
+  workingDiagnosis    String?
+  initialTreatment    String?
+  courseOfManagement   String?
+  referralsOutcomes   String?
+  dispositionType     String?
+  dischargeDatetime   DateTime?
+  dcGC       String?
+  dcHR       Int?
+  dcRR       Int?
+  dcBP       String?
+  dcSpo2     String?
+  dcTemp     Float?
+  dcChest    String?
+  dcCVS      String?
+  dcAbdomen  String?
+  dcCNS      String?
+  dcMedications        String?
+  dcAdvice             String?
+  dcFollowUp           String?
+  dcDoctorId           String?
+  dcDoctor             Doctor?  @relation("DischargeDoctor", fields: [dcDoctorId], references: [id])
+  dcExplainedToName    String?
+  dcExplainedToRelation String?
+  clMedications    String?
+  clPrescription   String?
+  clLabReports     String?
+  clXrayEcg        String?
+  clCtMriUsg       String?
+  clMedCerts       String?
+  clOldDocs        String?
+  dcReceivedByName   String?
+  dcAttendingNurse   String?
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
