@@ -106,6 +106,7 @@ export default function PatientLogPage() {
                   <th className="px-4 py-3 font-medium">Arrival</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Doctor</th>
+                  <th className="px-4 py-3 font-medium w-20"></th>
                 </tr>
               </thead>
               <tbody>
@@ -134,11 +135,24 @@ export default function PatientLogPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">{p.attendingDoctor?.name ?? "—"}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!confirm(`Delete patient "${p.name}"? This cannot be undone.`)) return;
+                          const res = await fetch(`/api/patients/${p.id}`, { method: "DELETE" });
+                          if (res.ok) fetchPatients();
+                        }}
+                        className="text-xs px-2 py-1 rounded bg-red-50 text-red-700 hover:bg-red-100"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {patients.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                       No patients found.
                     </td>
                   </tr>

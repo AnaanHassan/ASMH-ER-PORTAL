@@ -114,6 +114,55 @@ export async function updatePatientInSheet(patient: {
   }
 }
 
+export async function deletePatientFromSheet(patientId: string) {
+  const sheetId = getSheetId();
+  if (!sheetId) return;
+
+  try {
+    const auth = getAuth();
+    const sheets = google.sheets({ version: "v4", auth });
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: "Patient Log!A:A",
+    });
+
+    const rows = response.data.values || [];
+    let rowIndex = -1;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][0] === patientId) {
+        rowIndex = i;
+        break;
+      }
+    }
+
+    if (rowIndex === -1) return;
+
+    // Get the sheet's internal ID
+    const spreadsheet = await sheets.spreadsheets.get({ spreadsheetId: sheetId });
+    const sheet = spreadsheet.data.sheets?.find(s => s.properties?.title === "Patient Log");
+    const sheetInternalId = sheet?.properties?.sheetId || 0;
+
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: sheetId,
+      requestBody: {
+        requests: [{
+          deleteDimension: {
+            range: {
+              sheetId: sheetInternalId,
+              dimension: "ROWS",
+              startIndex: rowIndex,
+              endIndex: rowIndex + 1,
+            },
+          },
+        }],
+      },
+    });
+  } catch (e) {
+    console.error("Google Sheets delete error:", e);
+  }
+}
+
 export async function initializeSheet(spreadsheetId: string) {
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
