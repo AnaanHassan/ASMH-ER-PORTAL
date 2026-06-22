@@ -47,6 +47,8 @@ export async function POST(req: NextRequest) {
       arrivalDateTime: new Date(),
       attendingDoctorId: (session.user as Record<string, unknown>).id as string,
       allergyHistory: "NKDA",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
   return NextResponse.json(patient, { status: 201 });

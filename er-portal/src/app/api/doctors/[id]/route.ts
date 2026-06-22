@@ -29,3 +29,23 @@ export async function PATCH(
   });
   return NextResponse.json(doctor);
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user as any).role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { id } = await params;
+
+  // Don't allow deleting yourself
+  if ((session.user as any).id === id) {
+    return NextResponse.json({ error: "Cannot delete your own account" }, { status: 400 });
+  }
+
+  await prisma.doctor.delete({ where: { id } });
+  return NextResponse.json({ success: true });
+}

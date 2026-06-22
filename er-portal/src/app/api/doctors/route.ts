@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       username: body.username,
       passwordHash,
       role: body.role || "DOCTOR",
+      createdAt: new Date(),
     },
     select: { id: true, name: true, username: true, role: true, active: true },
   });
