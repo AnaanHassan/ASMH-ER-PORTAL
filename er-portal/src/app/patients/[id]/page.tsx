@@ -57,7 +57,7 @@ export default function PatientRecordPage({ params }: { params: Promise<{ id: st
   if (loading || !patient) {
     return (
       <div className="flex items-center justify-center min-h-[80vh]">
-        <p className="text-gray-500">Loading patient record...</p>
+        <p style={{ color: "#64748B" }}>Loading patient record...</p>
       </div>
     );
   }
@@ -70,22 +70,23 @@ export default function PatientRecordPage({ params }: { params: Promise<{ id: st
   };
   const statusColor: Record<string, string> = {
     idle: "",
-    saving: "text-yellow-300",
-    saved: "text-green-300",
+    saving: "text-amber-300",
+    saved: "text-emerald-300",
     error: "text-red-300",
   };
 
   return (
     <div>
       {/* Banner */}
-      <div className="bg-slate-700 text-white px-6 py-3 flex items-center justify-between">
+      <div className="text-white px-6 py-4 flex items-center justify-between" style={{ backgroundColor: "#1B4965" }}>
         <div className="flex items-center gap-4">
-          <button onClick={handleBack} className="text-sm hover:underline">
-            &larr; Dashboard
+          <button onClick={handleBack} className="text-sm text-white/70 hover:text-white transition-colors">
+            &larr; Back
           </button>
+          <div className="h-5 w-px bg-white/20" />
           <div>
             <span className="font-bold text-lg">{patient.name as string}</span>
-            <span className="ml-3 text-sm text-gray-300">
+            <span className="ml-3 text-sm text-white/60">
               {patient.age ? `${patient.age}y` : ""}{patient.gender ? ` ${patient.gender}` : ""}
               {patient.nidPassport ? ` | NID: ${patient.nidPassport}` : ""}
               {(patient.bed as Record<string, unknown>)?.name ? ` | Bed: ${(patient.bed as Record<string, unknown>).name}` : ""}
@@ -98,30 +99,35 @@ export default function PatientRecordPage({ params }: { params: Promise<{ id: st
           )}
           <a
             href={`/api/patients/${id}/export/observation`}
-            className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded"
+            className="text-white text-xs px-3 py-1.5 rounded-md border border-white/30 hover:bg-white/10 transition-colors"
           >
-            Export Observation Chart
+            Export Observation
           </a>
           <a
             href={`/api/patients/${id}/export/discharge`}
-            className="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded"
+            className="text-white text-xs px-3 py-1.5 rounded-md border border-white/30 hover:bg-white/10 transition-colors"
           >
-            Export Discharge Summary
+            Export Discharge
           </a>
         </div>
       </div>
 
       {/* Tab bar */}
-      <div className="border-b border-gray-200 bg-white px-6 flex gap-0 overflow-x-auto">
+      <div className="bg-white px-6 flex gap-0 overflow-x-auto shadow-sm">
         {TABS.map((tab, i) => (
           <button
             key={tab}
             onClick={() => setActiveTab(i)}
-            className={`px-4 py-2.5 text-sm whitespace-nowrap border-b-2 transition-colors ${
+            className={`px-4 py-3 text-sm whitespace-nowrap border-b-2 transition-colors ${
               activeTab === i
-                ? "border-blue-600 text-blue-600 font-medium"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "font-medium"
+                : "border-transparent hover:text-gray-700"
             }`}
+            style={
+              activeTab === i
+                ? { borderColor: "#2EC4B6", color: "#1B4965" }
+                : { color: "#64748B" }
+            }
           >
             {tab}
           </button>

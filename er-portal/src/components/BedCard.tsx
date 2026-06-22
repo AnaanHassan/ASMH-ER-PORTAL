@@ -22,27 +22,42 @@ interface BedData {
   patients: BedPatient[];
 }
 
+const zoneConfig: Record<string, { occupied: string; empty: string; style?: React.CSSProperties; emptyStyle?: React.CSSProperties }> = {
+  RESUS: {
+    occupied: "bg-red-600 text-white",
+    empty: "border-2 border-dashed border-red-400 bg-red-50",
+  },
+  RECEIVING: {
+    occupied: "text-white",
+    empty: "border-2 border-dashed bg-teal-50",
+    style: { backgroundColor: "#2EC4B6" },
+    emptyStyle: { borderColor: "#2EC4B6" },
+  },
+  TRAUMA: {
+    occupied: "text-white",
+    empty: "border-2 border-dashed bg-teal-50",
+    style: { backgroundColor: "#36B5A8" },
+    emptyStyle: { borderColor: "#36B5A8" },
+  },
+  GENERAL: {
+    occupied: "bg-white border-l-4",
+    empty: "border-2 border-dashed border-gray-300 bg-gray-50",
+    style: { borderLeftColor: "#2EC4B6" },
+  },
+  TRIAGE: {
+    occupied: "bg-white border-l-4",
+    empty: "border-2 border-dashed border-blue-300 bg-blue-50",
+    style: { borderLeftColor: "#3B82F6" },
+  },
+};
+
 export default function BedCard({ bed }: { bed: BedData }) {
   const router = useRouter();
   const patient = bed.patients[0] || null;
   const isEmpty = !patient;
   const isPendingDC = patient?.dispositionType && !["ADMITTED"].includes(patient.dispositionType);
 
-  const zoneStyles: Record<string, string> = {
-    RESUS: "bg-red-600 text-white",
-    RECEIVING: "bg-red-300",
-    TRAUMA: "bg-red-200",
-    GENERAL: "bg-amber-50 border border-amber-200",
-    TRIAGE: "bg-blue-50 border border-blue-200",
-  };
-
-  const emptyStyles: Record<string, string> = {
-    RESUS: "bg-red-600/20 border-2 border-dashed border-red-400",
-    RECEIVING: "bg-red-200/30 border-2 border-dashed border-red-300",
-    TRAUMA: "bg-red-100/30 border-2 border-dashed border-red-200",
-    GENERAL: "bg-amber-50/50 border-2 border-dashed border-amber-200",
-    TRIAGE: "bg-blue-50/50 border-2 border-dashed border-blue-200",
-  };
+  const config = zoneConfig[bed.zone] || zoneConfig.GENERAL;
 
   function handleClick() {
     if (patient) {
@@ -58,34 +73,43 @@ export default function BedCard({ bed }: { bed: BedData }) {
     return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
   }
 
+  const isWhiteCard = bed.zone === "GENERAL" || bed.zone === "TRIAGE";
+  const textPrimary = isWhiteCard && !isEmpty ? { color: "#1A202C" } : {};
+  const textSecondary = isWhiteCard && !isEmpty ? { color: "#64748B" } : {};
+
   return (
     <div
       onClick={handleClick}
-      className={`rounded-lg p-3 cursor-pointer transition-shadow hover:shadow-lg min-h-[120px] ${
-        isEmpty ? emptyStyles[bed.zone] : zoneStyles[bed.zone]
+      className={`rounded-xl p-3.5 cursor-pointer transition-all hover:shadow-md min-h-[120px] ${
+        isEmpty ? config.empty : config.occupied
       }`}
+      style={isEmpty ? config.emptyStyle : config.style}
     >
       <div className="flex justify-between items-start mb-2">
-        <span className="font-bold text-sm">{bed.zone === "TRIAGE" ? `🪑 ${bed.name}` : bed.name}</span>
+        <span className="font-bold text-sm" style={textPrimary}>{bed.name}</span>
         {isPendingDC && (
-          <span className="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full">PENDING DC</span>
+          <span className="text-white text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: "#F39C12" }}>
+            PENDING DC
+          </span>
         )}
       </div>
       {patient ? (
-        <div className={`rounded p-2 text-sm ${bed.zone === "RESUS" ? "bg-black/15" : "bg-black/5"}`}>
-          <div className="font-semibold">
+        <div className={`rounded-lg p-2.5 text-sm ${
+          isWhiteCard ? "bg-gray-50" : "bg-black/10"
+        }`}>
+          <div className="font-semibold" style={textPrimary}>
             {patient.name}{patient.age ? `, ${patient.age}` : ""}{patient.gender ? patient.gender[0] : ""}
           </div>
           {patient.chiefComplaints && (
-            <div className="text-xs opacity-80 mt-0.5 line-clamp-1">{patient.chiefComplaints}</div>
+            <div className="text-xs opacity-70 mt-0.5 line-clamp-1" style={textSecondary}>{patient.chiefComplaints}</div>
           )}
-          <div className="text-xs opacity-60 mt-0.5">
+          <div className="text-xs opacity-50 mt-0.5" style={textSecondary}>
             Arrived {formatTime(patient.arrivalDateTime)}
             {patient.attendingDoctor && ` · ${patient.attendingDoctor.name}`}
           </div>
         </div>
       ) : (
-        <div className="text-center text-gray-400 italic text-sm py-4">Available</div>
+        <div className="text-center italic text-sm py-4" style={{ color: "#94A3B8" }}>Available</div>
       )}
     </div>
   );
