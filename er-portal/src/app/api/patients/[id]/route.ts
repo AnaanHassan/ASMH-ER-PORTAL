@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { updatePatientInSheet } from "@/lib/googleSheets";
 
 export async function GET(
   req: NextRequest,
@@ -56,6 +57,23 @@ export async function PATCH(
     data.status = statusMap[data.dispositionType as string] || data.status;
   }
 
-  const patient = await prisma.patient.update({ where: { id }, data });
+  const patient = await prisma.patient.update({
+    where: { id },
+    data,
+    include: { dcDoctor: { select: { name: true } } },
+  });
+
+  // Update Google Sheet when disposition changes
+  if (data.dispositionType) {
+    updatePatientInSheet({
+      id: patient.id,
+      dispositionType: patient.dispositionType,
+      workingDiagnosis: patient.workingDiagnosis,
+      dischargeDatetime: patient.dischargeDatetime,
+      dcDoctorName: patient.dcDoctor?.name,
+      status: patient.status,
+    }).catch(() => {});
+  }
+
   return NextResponse.json(patient);
 }

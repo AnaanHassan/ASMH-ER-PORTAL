@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { logPatientToSheet } from "@/lib/googleSheets";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -48,6 +49,25 @@ export async function POST(req: NextRequest) {
       attendingDoctorId: (session.user as Record<string, unknown>).id as string,
       allergyHistory: "NKDA",
     },
+    include: {
+      bed: { select: { name: true } },
+      attendingDoctor: { select: { name: true } },
+    },
   });
+
+  // Log to Google Sheet (fire and forget)
+  logPatientToSheet({
+    id: patient.id,
+    name: patient.name,
+    age: patient.age,
+    gender: patient.gender,
+    nidPassport: patient.nidPassport,
+    hospitalNumber: patient.hospitalNumber,
+    bedName: patient.bed?.name,
+    arrivalDateTime: patient.arrivalDateTime,
+    chiefComplaints: patient.chiefComplaints,
+    attendingDoctorName: patient.attendingDoctor?.name,
+  }).catch(() => {});
+
   return NextResponse.json(patient, { status: 201 });
 }
