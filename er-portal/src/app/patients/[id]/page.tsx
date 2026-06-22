@@ -78,7 +78,10 @@ export default function PatientRecordPage({ params }: { params: Promise<{ id: st
   return (
     <div>
       {/* Banner */}
-      <div className="text-white px-6 py-4 flex items-center justify-between" style={{ backgroundColor: "#1B4965" }}>
+      <div
+        className="text-white px-6 py-4 flex items-center justify-between"
+        style={{ background: "linear-gradient(135deg, #1B4965 0%, #1a3f5c 100%)" }}
+      >
         <div className="flex items-center gap-4">
           <button onClick={handleBack} className="text-sm text-white/70 hover:text-white transition-colors">
             &larr; Back
@@ -113,21 +116,16 @@ export default function PatientRecordPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Tab bar */}
-      <div className="bg-white px-6 flex gap-0 overflow-x-auto shadow-sm">
+      <div className="bg-[#F0F4F8] px-6 pt-2 flex gap-1 overflow-x-auto">
         {TABS.map((tab, i) => (
           <button
             key={tab}
             onClick={() => setActiveTab(i)}
-            className={`px-4 py-3 text-sm whitespace-nowrap border-b-2 transition-colors ${
+            className={`px-4 py-2.5 text-sm whitespace-nowrap rounded-t-lg transition-colors ${
               activeTab === i
-                ? "font-medium"
-                : "border-transparent hover:text-gray-700"
+                ? "bg-white text-[#1B4965] font-semibold shadow-sm"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
             }`}
-            style={
-              activeTab === i
-                ? { borderColor: "#2EC4B6", color: "#1B4965" }
-                : { color: "#64748B" }
-            }
           >
             {tab}
           </button>
@@ -135,7 +133,7 @@ export default function PatientRecordPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Tab content */}
-      <div className="max-w-3xl mx-auto p-6">
+      <div className="max-w-3xl mx-auto py-6 px-2">
         {activeTab === 0 && <DemographicsTab patient={patient} onChange={handleChange} beds={beds} doctors={doctors} />}
         {activeTab === 1 && <PresentingComplaintTab patient={patient} onChange={handleChange} />}
         {activeTab === 2 && <ABCDETab patient={patient} onChange={handleChange} />}

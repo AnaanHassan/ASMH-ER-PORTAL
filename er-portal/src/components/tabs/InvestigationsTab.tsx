@@ -10,10 +10,10 @@ interface Props {
 
 export default function InvestigationsTab({ patient, onChange }: Props) {
   return (
-    <div className="space-y-5">
-      <div>
-        <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase">Blood</h3>
-        <div className="grid grid-cols-3 gap-2">
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+        <h3 className="text-sm font-semibold text-[#1B4965] mb-4">Blood</h3>
+        <div className="grid grid-cols-3 gap-1">
           <CheckboxField label="CBC" field="invCBC" checked={!!patient.invCBC} onChange={onChange} />
           <CheckboxField label="LFT" field="invLFT" checked={!!patient.invLFT} onChange={onChange} />
           <CheckboxField label="RFT" field="invRFT" checked={!!patient.invRFT} onChange={onChange} />
@@ -26,17 +26,17 @@ export default function InvestigationsTab({ patient, onChange }: Props) {
         </div>
       </div>
 
-      <div>
-        <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase">Urine</h3>
-        <div className="grid grid-cols-3 gap-2">
+      <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+        <h3 className="text-sm font-semibold text-[#1B4965] mb-4">Urine</h3>
+        <div className="grid grid-cols-3 gap-1">
           <CheckboxField label="Routine" field="invUrineRoutine" checked={!!patient.invUrineRoutine} onChange={onChange} />
           <CheckboxField label="Culture" field="invUrineCulture" checked={!!patient.invUrineCulture} onChange={onChange} />
         </div>
       </div>
 
-      <div>
-        <h3 className="text-xs font-bold text-gray-700 mb-2 uppercase">Radiology</h3>
-        <div className="grid grid-cols-3 gap-2">
+      <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+        <h3 className="text-sm font-semibold text-[#1B4965] mb-4">Radiology</h3>
+        <div className="grid grid-cols-3 gap-1">
           <CheckboxField label="ECG" field="invECG" checked={!!patient.invECG} onChange={onChange} />
           <CheckboxField label="X-ray" field="invXray" checked={!!patient.invXray} onChange={onChange} />
           <CheckboxField label="USG" field="invUSG" checked={!!patient.invUSG} onChange={onChange} />
@@ -46,7 +46,9 @@ export default function InvestigationsTab({ patient, onChange }: Props) {
         </div>
       </div>
 
-      <TextField label="Others" field="invOthers" value={patient.invOthers as string} onChange={onChange} />
+      <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+        <TextField label="Others" field="invOthers" value={patient.invOthers as string} onChange={onChange} />
+      </div>
     </div>
   );
 }

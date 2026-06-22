@@ -10,7 +10,7 @@ interface Props {
 
 export default function PresentingComplaintTab({ patient, onChange }: Props) {
   return (
-    <div className="space-y-4">
+    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm space-y-4">
       <TextAreaField label="Chief Complaints" field="chiefComplaints" value={patient.chiefComplaints as string} onChange={onChange} rows={4} />
       <TextAreaField label="History of Presenting Illness (HPI)" field="historyOfPresentingIllness" value={patient.historyOfPresentingIllness as string} onChange={onChange} rows={6} />
     </div>

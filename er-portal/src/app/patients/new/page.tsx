@@ -30,23 +30,27 @@ function NewPatientForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-md space-y-4">
-      <h1 className="text-xl font-bold text-gray-800">New Patient</h1>
+    <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md space-y-5">
+      <div className="text-center mb-2">
+        <h1 className="text-xl font-bold text-[#1B4965]">New Patient</h1>
+        <p className="text-sm text-[#64748B] mt-1">Create a new ER patient record</p>
+      </div>
       <div>
-        <label className="block text-sm font-medium text-gray-600 mb-1">Patient Name</label>
+        <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Patient Name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Enter patient name"
+          placeholder="Enter patient full name"
           autoFocus
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+          className="w-full border border-gray-200 rounded-lg bg-gray-50 px-3 py-2.5 text-sm focus:bg-white focus:ring-0 focus:outline-none placeholder:text-gray-400"
         />
       </div>
       <button
         type="submit"
         disabled={submitting || !name.trim()}
-        className="w-full bg-blue-700 text-white py-2 rounded text-sm font-medium hover:bg-blue-800 disabled:opacity-50"
+        className="w-full text-white py-2.5 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50"
+        style={{ backgroundColor: "#1B4965" }}
       >
         {submitting ? "Creating..." : "Create & Open Record"}
       </button>
@@ -57,7 +61,7 @@ function NewPatientForm() {
 export default function NewPatientPage() {
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
-      <Suspense fallback={<p className="text-gray-500">Loading...</p>}>
+      <Suspense fallback={<p className="text-[#64748B]">Loading...</p>}>
         <NewPatientForm />
       </Suspense>
     </div>

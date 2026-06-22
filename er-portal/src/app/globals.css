@@ -8,4 +8,26 @@
 
 body {
   background-color: #F0F4F8;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Polished form inputs */
+input[type="text"], input[type="number"], input[type="password"],
+input[type="datetime-local"], select, textarea {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #2EC4B6 !important;
+  box-shadow: 0 0 0 3px rgba(46, 196, 182, 0.1) !important;
+  outline: none !important;
+}
+
+/* Smooth transitions */
+* { transition-property: background-color, border-color, color, opacity; transition-duration: 0.15s; }
+
+/* Better scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }

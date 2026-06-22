@@ -15,14 +15,14 @@ interface TextFieldProps {
 export function TextField({ label, field, value, onChange, type = "text", placeholder, readOnly }: TextFieldProps) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+      <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">{label}</label>
       <input
         type={type}
         value={value ?? ""}
         onChange={(e) => onChange(field, e.target.value)}
         placeholder={placeholder}
         readOnly={readOnly}
-        className="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+        className="w-full text-sm border border-gray-200 rounded-lg bg-gray-50 px-3 py-2.5 focus:bg-white focus:ring-0 focus:outline-none placeholder:text-gray-400"
       />
     </div>
   );
@@ -40,13 +40,13 @@ interface TextAreaFieldProps {
 export function TextAreaField({ label, field, value, onChange, rows = 3, placeholder }: TextAreaFieldProps) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+      <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">{label}</label>
       <textarea
         value={value ?? ""}
         onChange={(e) => onChange(field, e.target.value)}
         rows={rows}
         placeholder={placeholder}
-        className="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+        className="w-full text-sm border border-gray-200 rounded-lg bg-gray-50 px-3 py-2.5 resize-y focus:bg-white focus:ring-0 focus:outline-none placeholder:text-gray-400"
       />
     </div>
   );
@@ -64,11 +64,11 @@ interface SelectFieldProps {
 export function SelectField({ label, field, value, onChange, options, placeholder }: SelectFieldProps) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+      <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">{label}</label>
       <select
         value={value ?? ""}
         onChange={(e) => onChange(field, e.target.value)}
-        className="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+        className="w-full text-sm border border-gray-200 rounded-lg bg-gray-50 px-3 py-2.5 focus:bg-white focus:ring-0 focus:outline-none"
       >
         <option value="">{placeholder || "Select..."}</option>
         {options.map((o) => (
@@ -88,14 +88,14 @@ interface CheckboxFieldProps {
 
 export function CheckboxField({ label, field, checked, onChange }: CheckboxFieldProps) {
   return (
-    <label className="flex items-center gap-2 text-sm">
+    <label className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer">
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(field, e.target.checked)}
-        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+        className="w-4 h-4 rounded accent-[#2EC4B6]"
       />
-      {label}
+      <span className="text-sm text-gray-700">{label}</span>
     </label>
   );
 }
