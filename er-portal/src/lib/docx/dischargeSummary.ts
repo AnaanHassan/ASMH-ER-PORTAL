@@ -18,6 +18,7 @@ import {
   textRun,
   labelValue,
   sectionHeading,
+  documentTitle,
 } from "./letterhead";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -249,6 +250,9 @@ export function buildDischargeSummary(p: Patient): Document {
         },
         headers: { default: createLetterheadHeader() },
         children: [
+          // Title
+          documentTitle("ER DISCHARGE SUMMARY"),
+
           // Demographics
           demographicsTable,
           new Paragraph({ spacing: { after: 60 }, children: [] }),

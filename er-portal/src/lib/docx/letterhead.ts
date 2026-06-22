@@ -98,6 +98,14 @@ export function labelValue(
   });
 }
 
+export function documentTitle(text: string): Paragraph {
+  return new Paragraph({
+    spacing: { after: 120 },
+    alignment: AlignmentType.CENTER,
+    children: [new TextRun({ text, bold: true, size: 28, font: "Arial", color: "1B4965" })],
+  });
+}
+
 export function sectionHeading(text: string): Paragraph {
   return new Paragraph({
     spacing: { before: 200, after: 80 },
