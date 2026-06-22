@@ -1,5 +1,14 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+
+// Ensure /data directory exists and is writable
+try {
+  if (!fs.existsSync('/data')) fs.mkdirSync('/data', { recursive: true });
+} catch(e) {
+  console.log('Note: /data mkdir skipped:', e.message);
+}
+
 const p = new PrismaClient();
 
 (async () => {

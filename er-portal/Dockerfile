@@ -19,9 +19,6 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
@@ -30,14 +27,12 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
+COPY --from=builder /app/node_modules/jszip ./node_modules/jszip
 COPY --from=builder /app/start.sh ./start.sh
 COPY --from=builder /app/init-db.cjs ./init-db.cjs
 COPY --from=builder /app/reset-db.cjs ./reset-db.cjs
 
-# Create data directory for SQLite
-RUN mkdir -p /data && chown nextjs:nodejs /data
-
-USER nextjs
+RUN mkdir -p /data
 
 ENV DATABASE_URL="file:/data/er-portal.db"
 ENV PORT=3000
