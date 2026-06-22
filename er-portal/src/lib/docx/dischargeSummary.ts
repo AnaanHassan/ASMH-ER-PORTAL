@@ -7,290 +7,317 @@ import {
   WidthType,
   BorderStyle,
   AlignmentType,
+  ShadingType,
+  TextRun,
+  PageBreak,
+  IShadingAttributesProperties,
 } from "docx";
 import {
   createLetterheadHeader,
   formatDateTime,
   textRun,
   labelValue,
+  sectionHeading,
 } from "./letterhead";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Patient = any;
 
 const CONTENT_WIDTH = 9026;
-const HALF = 4513;
-const CELL_MARGINS = { top: 40, bottom: 40, left: 80, right: 80 };
-const BORDER = {
-  style: BorderStyle.SINGLE,
-  size: 1,
-  color: "000000",
-};
-const BORDERS = {
-  top: BORDER,
-  bottom: BORDER,
-  left: BORDER,
-  right: BORDER,
-};
+const CELL_MARGINS = { top: 60, bottom: 60, left: 100, right: 100 };
+const BORDER = { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" };
+const BORDERS = { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER };
 
-function cell(
-  text: string,
-  width: number,
-  bold = false
+function v(val: unknown): string {
+  if (val === null || val === undefined || val === "") return "—";
+  return String(val);
+}
+
+function demoCell(
+  label: string,
+  value: string,
+  width: number
 ): TableCell {
   return new TableCell({
     width: { size: width, type: WidthType.DXA },
     margins: CELL_MARGINS,
     borders: BORDERS,
     children: [
-      new Paragraph({ children: [textRun(text, { bold })] }),
+      new Paragraph({
+        children: [
+          textRun(`${label}: `, { bold: true }),
+          textRun(value),
+        ],
+      }),
     ],
+  });
+}
+
+function demoCellSpan(
+  label: string,
+  value: string,
+  width: number,
+  span: number
+): TableCell {
+  return new TableCell({
+    width: { size: width, type: WidthType.DXA },
+    margins: CELL_MARGINS,
+    borders: BORDERS,
+    columnSpan: span,
+    children: [
+      new Paragraph({
+        children: [
+          textRun(`${label}: `, { bold: true }),
+          textRun(value),
+        ],
+      }),
+    ],
+  });
+}
+
+function headerCell(text: string, width: number): TableCell {
+  return new TableCell({
+    width: { size: width, type: WidthType.DXA },
+    margins: CELL_MARGINS,
+    borders: BORDERS,
+    shading: { type: ShadingType.CLEAR, fill: "1B4965", color: "auto" },
+    children: [
+      new Paragraph({
+        children: [
+          new TextRun({ text, bold: true, font: "Arial", size: 20, color: "FFFFFF" }),
+        ],
+      }),
+    ],
+  });
+}
+
+function plainCell(text: string, width: number, shading?: IShadingAttributesProperties): TableCell {
+  return new TableCell({
+    width: { size: width, type: WidthType.DXA },
+    margins: CELL_MARGINS,
+    borders: BORDERS,
+    shading: shading as IShadingAttributesProperties,
+    children: [new Paragraph({ children: [textRun(text)] })],
   });
 }
 
 function examRow(
   label: string,
   arrival: string,
-  discharge: string
+  discharge: string,
+  index: number
 ): TableRow {
-  const third = 3600;
+  const colW = [2400, 3313, 3313];
+  const shading =
+    index % 2 === 1
+      ? { type: ShadingType.CLEAR, fill: "F8F9FA", color: "auto" }
+      : undefined;
   return new TableRow({
     children: [
-      cell(label, third, true),
-      cell(arrival, third),
-      cell(discharge, third),
+      new TableCell({
+        width: { size: colW[0], type: WidthType.DXA },
+        margins: CELL_MARGINS,
+        borders: BORDERS,
+        shading: shading as IShadingAttributesProperties,
+        children: [new Paragraph({ children: [textRun(label, { bold: true })] })],
+      }),
+      plainCell(arrival, colW[1], shading),
+      plainCell(discharge, colW[2], shading),
     ],
   });
 }
 
 function checklistRow(
   item: string,
-  value: string | null | undefined
+  value: string | null | undefined,
+  index: number
 ): TableRow {
-  const colW = [4800, 2000, 2000, 2000];
-  const yes = value && value !== "" ? "Y" : "";
-  const no = !value || value === "" ? "" : "";
+  const colW = [4526, 1500, 1500, 1500];
+  const checked = value !== null && value !== undefined && value !== "";
+  const shading =
+    index % 2 === 1
+      ? { type: ShadingType.CLEAR, fill: "F8F9FA", color: "auto" }
+      : undefined;
   return new TableRow({
     children: [
-      cell(item, colW[0]),
-      cell(yes, colW[1]),
-      cell(no, colW[2]),
-      cell("", colW[3]),
+      new TableCell({
+        width: { size: colW[0], type: WidthType.DXA },
+        margins: CELL_MARGINS,
+        borders: BORDERS,
+        shading: shading as IShadingAttributesProperties,
+        children: [new Paragraph({ children: [textRun(item)] })],
+      }),
+      plainCell(checked ? "✓" : "", colW[1], shading),
+      plainCell(checked ? "" : "✓", colW[2], shading),
+      plainCell("", colW[3], shading),
     ],
   });
 }
 
 export function buildDischargeSummary(p: Patient): Document {
+  const colW4 = [2256, 2257, 2256, 2257];
+
+  // --- Demographics ---
   const demographicsTable = new Table({
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
-    columnWidths: [HALF, HALF],
+    columnWidths: colW4,
     rows: [
       new TableRow({
         children: [
-          cell(`Name: ${p.name ?? ""}`, HALF, true),
-          cell(`Bed: ${p.bed?.name ?? ""}`, HALF),
+          demoCell("Patient Name", v(p.name), colW4[0]),
+          demoCell("Age / Gender", `${v(p.age)} / ${v(p.gender)}`, colW4[1]),
+          demoCell("NID/Passport", v(p.nidPassport), colW4[2]),
+          demoCell("Hospital No", v(p.hospitalNumber), colW4[3]),
         ],
       }),
       new TableRow({
         children: [
-          cell(
-            `Age/Gender: ${p.age ?? ""}/${p.gender ?? ""}`,
-            HALF
-          ),
-          cell(
-            `Arrival: ${formatDateTime(p.arrivalDateTime)}`,
-            HALF
-          ),
+          demoCell("ER Bed", v(p.bed?.name), colW4[0]),
+          demoCell("Arrival", formatDateTime(p.arrivalDateTime) || "—", colW4[1]),
+          demoCell("Referred By", v(p.referredBy), colW4[2]),
+          demoCell("Attending Doctor", v(p.attendingDoctor?.name), colW4[3]),
         ],
       }),
       new TableRow({
         children: [
-          cell(
-            `NID: ${p.nidPassport ?? ""} / MRN: ${p.hospitalNumber ?? ""}`,
-            HALF
-          ),
-          cell(
-            `Discharge: ${formatDateTime(p.dischargeDatetime)}`,
-            HALF
-          ),
+          demoCellSpan("Discharge Date & Time", formatDateTime(p.dischargeDatetime) || "—", colW4[0] + colW4[1], 2),
+          demoCellSpan("", "", colW4[2] + colW4[3], 2),
         ],
       }),
     ],
   });
 
-  const thirdW = 3009;
+  // --- Exam comparison ---
+  const examColW = [2400, 3313, 3313];
   const examTable = new Table({
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
-    columnWidths: [thirdW, thirdW, thirdW],
+    columnWidths: examColW,
     rows: [
       new TableRow({
         children: [
-          cell("Parameter", thirdW, true),
-          cell("On Arrival to ER", thirdW, true),
-          cell("At Discharge from ER", thirdW, true),
+          headerCell("Parameter", examColW[0]),
+          headerCell("On Arrival", examColW[1]),
+          headerCell("At Discharge", examColW[2]),
         ],
       }),
-      examRow("GC", p.physicalExamGC ?? "", p.dcGC ?? ""),
-      examRow("HR", String(p.pr ?? ""), String(p.dcHR ?? "")),
-      examRow("RR", String(p.rr ?? ""), String(p.dcRR ?? "")),
-      examRow("BP", p.bp ?? "", p.dcBP ?? ""),
-      examRow(
-        "SpO2",
-        `${p.spo2Percent ?? ""}%`,
-        p.dcSpo2 ?? ""
-      ),
-      examRow(
-        "Temp",
-        `${p.tempC ?? ""}°C`,
-        p.dcTemp ? `${p.dcTemp}°C` : ""
-      ),
-      examRow("Chest", p.chestFindings ?? "", p.dcChest ?? ""),
-      examRow("CVS", p.heartSounds ?? "", p.dcCVS ?? ""),
-      examRow("Abdomen", p.abdomenLogRoll ?? "", p.dcAbdomen ?? ""),
-      examRow(
-        "CNS",
-        `GCS: E${p.gcsE ?? ""}V${p.gcsV ?? ""}M${p.gcsM ?? ""}`,
-        p.dcCNS ?? ""
-      ),
+      examRow("GC", v(p.physicalExamGC), v(p.dcGC), 0),
+      examRow("HR", v(p.pr), v(p.dcHR), 1),
+      examRow("RR", v(p.rr), v(p.dcRR), 2),
+      examRow("BP", v(p.bp), v(p.dcBP), 3),
+      examRow("SpO₂", `${v(p.spo2Percent)}%`, v(p.dcSpo2), 4),
+      examRow("Temperature", p.tempC ? `${p.tempC}°C` : "—", p.dcTemp ? `${p.dcTemp}°C` : "—", 5),
+      examRow("Chest", v(p.chestFindings), v(p.dcChest), 6),
+      examRow("CVS", v(p.heartSounds), v(p.dcCVS), 7),
+      examRow("Abdomen", v(p.abdomenLogRoll), v(p.dcAbdomen), 8),
+      examRow("CNS", `GCS: E${v(p.gcsE)}V${v(p.gcsV)}M${v(p.gcsM)}`, v(p.dcCNS), 9),
     ],
   });
 
-  const clColW = [3826, 1733, 1733, 1734];
+  // --- Checklist ---
+  const clColW = [4526, 1500, 1500, 1500];
   const checklistTable = new Table({
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
     columnWidths: clColW,
     rows: [
       new TableRow({
         children: [
-          cell("Item", clColW[0], true),
-          cell("Yes", clColW[1], true),
-          cell("No", clColW[2], true),
-          cell("N/A", clColW[3], true),
+          headerCell("Item", clColW[0]),
+          headerCell("Yes", clColW[1]),
+          headerCell("No", clColW[2]),
+          headerCell("N/A", clColW[3]),
         ],
       }),
-      checklistRow("Medications", p.clMedications),
-      checklistRow("Prescription", p.clPrescription),
-      checklistRow("Lab Reports", p.clLabReports),
-      checklistRow("X-Ray / ECG", p.clXrayEcg),
-      checklistRow("CT / MRI / USG", p.clCtMriUsg),
-      checklistRow("Medical Certificates", p.clMedCerts),
-      checklistRow("Old Documents", p.clOldDocs),
+      checklistRow("Medications", p.clMedications, 0),
+      checklistRow("Prescription", p.clPrescription, 1),
+      checklistRow("Lab Reports", p.clLabReports, 2),
+      checklistRow("X-Ray / ECG", p.clXrayEcg, 3),
+      checklistRow("CT / MRI / USG", p.clCtMriUsg, 4),
+      checklistRow("Medical Certificates", p.clMedCerts, 5),
+      checklistRow("Old Documents", p.clOldDocs, 6),
     ],
   });
 
+  // --- Build document ---
   return new Document({
     sections: [
       {
         properties: {
           page: {
             size: { width: 11906, height: 16838 },
-            margin: {
-              top: 2546,
-              bottom: 1547,
-              left: 1440,
-              right: 1440,
-            },
+            margin: { top: 2546, bottom: 1547, left: 1440, right: 1440 },
           },
         },
-        headers: {
-          default: createLetterheadHeader(),
-        },
+        headers: { default: createLetterheadHeader() },
         children: [
           // Demographics
           demographicsTable,
-          new Paragraph({ spacing: { after: 100 }, children: [] }),
+          new Paragraph({ spacing: { after: 60 }, children: [] }),
 
-          // History
-          labelValue(
-            "Underlying Conditions",
-            p.underlyingConditions
-          ),
+          // Medical History
+          sectionHeading("Medical History"),
+          labelValue("Underlying Conditions", p.underlyingConditions),
           labelValue("Regular Medications", p.regularMedications),
-          labelValue("Allergy History", p.allergyHistory),
-          new Paragraph({ spacing: { after: 80 }, children: [] }),
+          labelValue("Allergy", p.allergyHistory),
 
-          // Complaints
+          // Presenting Complaint
+          sectionHeading("Presenting Complaint"),
           labelValue("Chief Complaints", p.chiefComplaints),
-          labelValue(
-            "History of Presenting Illness",
-            p.historyOfPresentingIllness
-          ),
-          new Paragraph({ spacing: { after: 100 }, children: [] }),
+          labelValue("History of Presenting Illness", p.historyOfPresentingIllness),
 
-          // Examination comparison
-          new Paragraph({
-            spacing: { after: 60 },
-            children: [
-              textRun("EXAMINATION", { bold: true, size: 22 }),
-            ],
-          }),
+          // Examination
+          sectionHeading("Examination"),
           examTable,
-          new Paragraph({ spacing: { after: 100 }, children: [] }),
 
           // Investigations
+          sectionHeading("Investigations"),
           new Paragraph({
             spacing: { after: 60 },
-            children: [
-              textRun("Investigations: ", { bold: true }),
-              textRun("All Enclosed"),
-            ],
+            children: [textRun("All Enclosed")],
           }),
-          new Paragraph({ spacing: { after: 80 }, children: [] }),
 
-          // Diagnosis & management
-          labelValue("Diagnosis", p.workingDiagnosis),
-          labelValue(
-            "Course of Management",
-            p.courseOfManagement
-          ),
-          new Paragraph({ spacing: { after: 80 }, children: [] }),
+          // Diagnosis
+          sectionHeading("Diagnosis"),
+          labelValue("Working Diagnosis", p.workingDiagnosis),
 
-          // Discharge statement
+          // Course of Management
+          sectionHeading("Course of Management"),
+          labelValue("Course", p.courseOfManagement),
           new Paragraph({
-            spacing: { after: 80 },
+            spacing: { before: 80, after: 80 },
             alignment: AlignmentType.JUSTIFIED,
             children: [
-              textRun(
-                "The patient is being discharged from emergency room in a hemodynamically stable state with the following advice.",
-                { bold: true }
-              ),
+              new TextRun({
+                text: "The patient is being discharged from emergency room in a hemodynamically stable state with the following advice.",
+                bold: true,
+                italics: true,
+                font: "Arial",
+                size: 20,
+              }),
             ],
           }),
 
-          // Referrals & instructions
-          labelValue("Referrals", p.referralsOutcomes),
+          // Page break
+          new Paragraph({ children: [new PageBreak()] }),
+
+          // Discharge Instructions
+          sectionHeading("Discharge Instructions"),
           labelValue("Medications", p.dcMedications),
           labelValue("Advice", p.dcAdvice),
           labelValue("Follow-Up", p.dcFollowUp),
-          new Paragraph({ spacing: { after: 80 }, children: [] }),
 
-          // Doctors
-          labelValue(
-            "Attending Doctor",
-            p.attendingDoctor?.name
-          ),
+          // Discharge Details
+          sectionHeading("Discharge Details"),
+          labelValue("Attending Doctor", p.attendingDoctor?.name),
           labelValue("Discharged By", p.dcDoctor?.name),
-          new Paragraph({ spacing: { after: 80 }, children: [] }),
-
-          // Condition explained to
           labelValue(
             "Condition Explained To",
             p.dcExplainedToName
               ? `${p.dcExplainedToName} (${p.dcExplainedToRelation ?? ""})`
-              : ""
+              : null
           ),
-          new Paragraph({ spacing: { after: 100 }, children: [] }),
 
-          // Discharge checklist
-          new Paragraph({
-            spacing: { after: 60 },
-            children: [
-              textRun("DISCHARGE CHECKLIST", {
-                bold: true,
-                size: 22,
-              }),
-            ],
-          }),
+          // Discharge Checklist
+          sectionHeading("Discharge Checklist"),
           checklistTable,
           new Paragraph({ spacing: { after: 100 }, children: [] }),
 

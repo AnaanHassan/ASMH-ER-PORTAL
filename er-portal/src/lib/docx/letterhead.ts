@@ -4,6 +4,7 @@ import {
   TextRun,
   ImageRun,
   AlignmentType,
+  BorderStyle,
   HorizontalPositionRelativeFrom,
   VerticalPositionRelativeFrom,
 } from "docx";
@@ -94,5 +95,13 @@ export function labelValue(
       textRun(`${label}: `, { bold: true }),
       textRun(String(value ?? "")),
     ],
+  });
+}
+
+export function sectionHeading(text: string): Paragraph {
+  return new Paragraph({
+    spacing: { before: 200, after: 80 },
+    border: { bottom: { style: BorderStyle.SINGLE, size: 1, color: "2EC4B6", space: 4 } },
+    children: [new TextRun({ text, bold: true, size: 22, font: "Arial", color: "1B4965" })],
   });
 }
