@@ -25,7 +25,7 @@ export default function LoginPage() {
       <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <Image src="/images/logo.png" alt="AMSH Logo" width={100} height={100} className="object-contain" />
+            <Image src="/images/logo.png" alt="ASMH Logo" width={100} height={100} className="object-contain" />
           </div>
           <h1 className="text-xl font-bold" style={{ color: "#1A202C" }}>Dr. Abdul Samad Memorial Hospital</h1>
           <p className="text-sm mt-1" style={{ color: "#64748B" }}>Emergency & Trauma Department</p>

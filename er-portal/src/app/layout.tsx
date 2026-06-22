@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AMSH ER Portal",
+  title: "ASMH ER Portal",
   description: "Emergency Room Management - Dr. Abdul Samad Memorial Hospital",
 };
 

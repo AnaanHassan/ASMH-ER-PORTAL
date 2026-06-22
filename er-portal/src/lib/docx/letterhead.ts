@@ -36,8 +36,8 @@ export function createLetterheadHeader() {
               wrap: { type: 0 },
             },
             altText: {
-              title: "AMSH Logo",
-              description: "Dr. Abdul Samad Memorial Hospital Logo",
+              title: "ASMH Logo",
+              description: "Dr. Abdul Samad Memorial Hospital",
               name: "hospital-logo",
             },
           }),

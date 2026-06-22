@@ -24,8 +24,8 @@ export default function Navbar({ bedCount }: { bedCount?: { occupied: number; to
     <nav className="text-white px-5 py-3 flex items-center justify-between" style={{ backgroundColor: "#1B4965" }}>
       <div className="flex items-center gap-5">
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/images/logo.png" alt="AMSH" width={32} height={32} className="object-contain" />
-          <span className="font-bold text-lg tracking-tight">AMSH ER</span>
+          <Image src="/images/logo.png" alt="ASMH" width={32} height={32} className="object-contain" />
+          <span className="font-bold text-lg tracking-tight">ASMH ER</span>
         </Link>
         <div className="w-px h-5 bg-white/20" />
         <Link href="/" className={linkClass("/")} style={pathname === "/" ? activeBorder : undefined}>Dashboard</Link>
