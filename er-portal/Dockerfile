@@ -31,6 +31,8 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
 COPY --from=builder /app/start.sh ./start.sh
+COPY --from=builder /app/init-db.cjs ./init-db.cjs
+COPY --from=builder /app/reset-db.cjs ./reset-db.cjs
 
 # Create data directory for SQLite
 RUN mkdir -p /data && chown nextjs:nodejs /data
