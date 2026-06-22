@@ -20,7 +20,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Patient = any;
 
-const CONTENT_WIDTH = 10800;
+const CONTENT_WIDTH = 9026;
 const CELL_MARGINS = { top: 40, bottom: 40, left: 80, right: 80 };
 const BORDER = {
   style: BorderStyle.SINGLE,
@@ -76,8 +76,8 @@ export function buildObservationChart(p: Patient): Document {
   const gcsTotal =
     (p.gcsE ?? 0) + (p.gcsV ?? 0) + (p.gcsM ?? 0) || "";
 
-  const colW4 = [2700, 2700, 2700, 2700];
-  const colW6 = [1800, 1800, 1800, 1800, 1800, 1800];
+  const colW4 = [2256, 2257, 2256, 2257];
+  const colW6 = [1504, 1504, 1505, 1504, 1505, 1504];
 
   const demographicsTable = new Table({
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
@@ -149,11 +149,11 @@ export function buildObservationChart(p: Patient): Document {
       {
         properties: {
           page: {
-            size: { width: 12240, height: 15840 },
-            margin: { top: 720, bottom: 720, left: 720, right: 720 },
+            size: { width: 11906, height: 16838 },
+            margin: { top: 2546, bottom: 1547, left: 1440, right: 1440 },
           },
         },
-        headers: { default: createLetterheadHeader("PATIENT RECORD") },
+        headers: { default: createLetterheadHeader() },
         children: [
           // Demographics
           demographicsTable,

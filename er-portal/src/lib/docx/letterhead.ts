@@ -4,52 +4,42 @@ import {
   TextRun,
   ImageRun,
   AlignmentType,
+  HorizontalPositionRelativeFrom,
+  VerticalPositionRelativeFrom,
 } from "docx";
 import fs from "fs";
 import path from "path";
 
-export function createLetterheadHeader(subtitle: string) {
+export function createLetterheadHeader() {
   const logoPath = path.join(process.cwd(), "public/images/hospital-logo.jpg");
   const logoBuffer = fs.readFileSync(logoPath);
 
   return new Header({
     children: [
       new Paragraph({
-        alignment: AlignmentType.CENTER,
         children: [
           new ImageRun({
             type: "jpg",
             data: logoBuffer,
-            transformation: { width: 500, height: 80 },
+            transformation: { width: 795, height: 1125 },
+            floating: {
+              horizontalPosition: {
+                relative: HorizontalPositionRelativeFrom.COLUMN,
+                offset: -949570,
+              },
+              verticalPosition: {
+                relative: VerticalPositionRelativeFrom.PARAGRAPH,
+                offset: -473026,
+              },
+              behindDocument: true,
+              allowOverlap: true,
+              wrap: { type: 0 },
+            },
             altText: {
               title: "AMSH Logo",
               description: "Dr. Abdul Samad Memorial Hospital Logo",
               name: "hospital-logo",
             },
-          }),
-        ],
-      }),
-      new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 40 },
-        children: [
-          new TextRun({
-            text: "DEPARTMENT OF EMERGENCY AND TRAUMA",
-            bold: true,
-            size: 20,
-            font: "Arial",
-          }),
-        ],
-      }),
-      new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 100 },
-        children: [
-          new TextRun({
-            text: subtitle,
-            bold: true,
-            size: 24,
-            font: "Arial",
           }),
         ],
       }),

@@ -18,8 +18,8 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Patient = any;
 
-const CONTENT_WIDTH = 10800;
-const HALF = 5400;
+const CONTENT_WIDTH = 9026;
+const HALF = 4513;
 const CELL_MARGINS = { top: 40, bottom: 40, left: 80, right: 80 };
 const BORDER = {
   style: BorderStyle.SINGLE,
@@ -118,7 +118,7 @@ export function buildDischargeSummary(p: Patient): Document {
     ],
   });
 
-  const thirdW = 3600;
+  const thirdW = 3009;
   const examTable = new Table({
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
     columnWidths: [thirdW, thirdW, thirdW],
@@ -155,7 +155,7 @@ export function buildDischargeSummary(p: Patient): Document {
     ],
   });
 
-  const clColW = [4800, 2000, 2000, 2000];
+  const clColW = [3826, 1733, 1733, 1734];
   const checklistTable = new Table({
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
     columnWidths: clColW,
@@ -183,17 +183,17 @@ export function buildDischargeSummary(p: Patient): Document {
       {
         properties: {
           page: {
-            size: { width: 12240, height: 15840 },
+            size: { width: 11906, height: 16838 },
             margin: {
-              top: 720,
-              bottom: 720,
-              left: 720,
-              right: 720,
+              top: 2546,
+              bottom: 1547,
+              left: 1440,
+              right: 1440,
             },
           },
         },
         headers: {
-          default: createLetterheadHeader("ER DISCHARGE SUMMARY"),
+          default: createLetterheadHeader(),
         },
         children: [
           // Demographics
